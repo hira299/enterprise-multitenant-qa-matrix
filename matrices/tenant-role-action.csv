@@ -1,0 +1,21 @@
+id,entity,action,actor_tenant,actor_role,target,expected,verify,risk,notes
+TRA-01,order,read,A,customer_user,own tenant,allow,response contains the order,medium,control case
+TRA-02,order,read,B,customer_user,tenant A record by ID,none,404 identical to a nonexistent ID; no data in body,high,existence leak if 403
+TRA-03,order,list,B,tenant_admin,tenant A records,none,tenant A orders absent from list and search results,high,check pagination and filters too
+TRA-04,order,update,B,tenant_admin,tenant A record by ID,none,404 and tenant A record unchanged in storage,critical,verify stored data not only response
+TRA-05,order,update,A,viewer,own tenant,deny,403 and record unchanged,high,UI hides the edit button; test the API
+TRA-06,order,bulk update,A,tenant_admin,mix of own and tenant B IDs,none for B IDs,only own records changed; B IDs rejected or ignored,critical,bulk endpoints often skip per-item checks
+TRA-07,order,create,A,customer_user,body with tenant_id=B,deny,record created in tenant A or request rejected; never in B,critical,tenant must come from the session
+TRA-08,invoice,read,B,finance_user,tenant A invoice by ID,none,404,critical,
+TRA-09,invoice,export,B,finance_user,all invoices,allow (own only),export contains only tenant B rows,high,exports and reports are separate code paths
+TRA-10,invoice line,read,B,finance_user,line of a tenant A invoice,none,404,high,child records reachable through a foreign parent
+TRA-11,attachment,download,B,customer_user,URL of a tenant A file,none,404 or 403 without a valid session for A,high,also test the URL with no session
+TRA-12,delivery,submit proof,A,manager,delivery assigned to an agent,deny,403,high,horizontal boundary between peer roles
+TRA-13,delivery,submit proof,A,field_agent,delivery assigned to another agent,own,403 or 404,high,ownership check
+TRA-14,user,change role,A,tenant_admin,own tenant user to platform_admin,deny,403 and role unchanged,critical,vertical escalation
+TRA-15,role,edit permissions,A,tenant_admin,system role,deny,403 and role unchanged,critical,system roles must be protected
+TRA-16,user,read,A,tenant_admin,tenant B user by ID,none,404,high,
+TRA-17,audit log,read,A,auditor,own tenant,allow,"entries contain no password hashes, session tokens, or OTP codes",critical,logging needs security testing
+TRA-18,audit log,read,B,auditor,tenant A entries,none,tenant A entries absent,critical,
+TRA-19,report,view dashboard,B,tenant_admin,aggregate totals,allow (own only),totals match the sum of tenant B records only,high,aggregates can include other tenants
+TRA-20,any,any,none,unauthenticated,any tenant,deny,401,high,run for every endpoint in the endpoint matrix

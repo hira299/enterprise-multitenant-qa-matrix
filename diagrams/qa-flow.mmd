@@ -1,0 +1,9 @@
+flowchart LR
+  M[Model tenants, roles,<br/>entities, rules] --> J[Journeys per persona<br/>breadth]
+  M --> X[Matrices at the API<br/>depth]
+  J --> D[Defects with layer,<br/>severity, evidence]
+  X --> D
+  D --> F[Fix]
+  F --> R[Retest the steps<br/>and the flows around them]
+  R --> G[Regression suite]
+  G --> X

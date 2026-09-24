@@ -1,0 +1,20 @@
+method,endpoint,platform_admin,tenant_admin,manager,finance_user,field_agent,customer_user,viewer,other_tenant_admin,unauthenticated,risk,notes
+GET,/api/orders,allow,allow,allow,allow,own,own,allow,allow (own tenant only),deny,medium,list must be filtered by tenant
+GET,/api/orders/{id},allow,allow,allow,allow,own,own,allow,none,deny,high,other tenant must get 404
+POST,/api/orders,deny,allow,allow,deny,deny,allow,deny,n/a,deny,medium,price and total computed on the server
+PATCH,/api/orders/{id},deny,allow,allow,deny,deny,own,deny,none,deny,high,locked after approval
+POST,/api/orders/{id}/approve,deny,allow,allow,deny,deny,deny,deny,none,deny,high,refuse when not in submitted state
+POST,/api/orders/{id}/cancel,deny,allow,allow,deny,deny,own,deny,none,deny,high,
+POST,/api/deliveries/{id}/start,deny,deny,deny,deny,own,deny,deny,none,deny,high,assigned agent only
+POST,/api/deliveries/{id}/proof,deny,deny,deny,deny,own,deny,deny,none,deny,high,assigned agent only; single submission
+GET,/api/invoices/{id},allow,allow,allow,allow,deny,own,allow,none,deny,high,
+POST,/api/invoices/{id}/payments,deny,allow,deny,allow,deny,deny,deny,none,deny,critical,amount must not exceed outstanding balance
+POST,/api/invoices/{id}/credit-notes,deny,allow,deny,allow,deny,deny,deny,none,deny,critical,credited quantity within returned quantity
+GET,/api/invoices/export,allow,allow,deny,allow,deny,deny,deny,allow (own tenant only),deny,high,export contains own tenant rows only
+GET,/api/users,allow,allow,deny,deny,deny,deny,deny,allow (own tenant only),deny,high,no password hashes or tokens in response
+POST,/api/users,allow,allow,deny,deny,deny,deny,deny,n/a,deny,critical,cannot create a role above own
+PATCH,/api/users/{id}/role,allow,allow,deny,deny,deny,deny,deny,none,deny,critical,cannot assign platform roles
+POST,/api/users/{id}/deactivate,allow,allow,deny,deny,deny,deny,deny,none,deny,critical,existing sessions must end
+PATCH,/api/roles/{id},allow,deny for system roles,deny,deny,deny,deny,deny,none,deny,critical,system roles protected
+GET,/api/audit-log,allow,allow,deny,deny,deny,deny,deny,none,deny,critical,no credentials or OTP codes in entries
+POST,/api/imports/products,deny,allow,allow,deny,deny,deny,deny,n/a,deny,medium,row counts match; rejected rows reported

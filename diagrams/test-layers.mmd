@@ -1,0 +1,6 @@
+flowchart TB
+  UI[UI<br/>what the user sees] -->|can hide| NET[Network traffic<br/>what the client sent and received]
+  NET -->|can differ from| DB[Stored data<br/>what actually happened]
+  UI -.- U1[finds broken journeys and usability defects]
+  NET -.- N1[finds permission, validation, and status-code defects]
+  DB -.- D1[finds reconciliation, duplication, and integrity defects]

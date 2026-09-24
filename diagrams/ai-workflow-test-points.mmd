@@ -1,0 +1,12 @@
+flowchart LR
+  IN[Input] --> G1{Input checks<br/>size, language, injection}
+  G1 --> M[Model<br/>probabilistic]
+  M --> P{Parse and validate<br/>schema, allowed values}
+  P -->|invalid| DLQ[Reject with reason<br/>retry, review, or dead-letter]
+  P -->|valid| R{Business rules<br/>limits, balances, policy}
+  R -->|violates| DLQ
+  R -->|ok| T[Tool call<br/>args validated, user permissions]
+  T -->|error or timeout| RT[Bounded retry<br/>idempotent]
+  RT --> T
+  T --> S[(State<br/>once, resumable)]
+  S --> OUT[Action or response]

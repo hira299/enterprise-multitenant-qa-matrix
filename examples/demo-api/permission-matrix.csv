@@ -1,0 +1,10 @@
+id,method,path,body,acme-admin,acme-manager,acme-agent,acme-agent-2,acme-viewer,globex-manager,acme-deactivated,anonymous,risk,notes
+ORD-LIST,GET,/api/orders,,200,200,200,200,200,200,401,401,medium,globex result must not contain acme orders (checked in scenarios)
+ORD-READ,GET,/api/orders/A-100,,200,200,200,200,200,404,401,401,high,other tenant gets 404 so existence is not confirmed
+ORD-MISSING,GET,/api/orders/DOES-NOT-EXIST,,404,404,404,404,404,404,401,401,low,control for ORD-READ: same code as another tenant's record
+ORD-CREATE,POST,/api/orders,"{""total"": 100}",201,201,403,403,403,201,401,401,medium,globex manager creates in its own tenant
+ORD-CREATE-INVALID,POST,/api/orders,"{""total"": -5}",400,400,403,403,403,400,401,401,medium,negative total rejected on the server
+ORD-APPROVE,POST,/api/orders/A-100/approve,,200,200,403,403,403,404,401,401,high,viewer UI has no approve button; the API must refuse too
+DEL-PROOF,POST,/api/deliveries/DL-1/proof,{},403,403,200,403,403,404,401,401,high,only the assigned agent (acme-agent) may submit proof
+INV-READ,GET,/api/invoices/INV-1,,200,200,200,200,200,404,401,401,high,
+INV-PAY,POST,/api/invoices/INV-1/payments,"{""amount"": 100}",201,403,403,403,403,404,401,401,critical,only admins record payments

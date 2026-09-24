@@ -1,0 +1,19 @@
+id,account_state,event,new_login_expected,existing_session_expected,verify,risk
+AUTH-01,active and verified,login with correct credentials,success,n/a,session created; session ID differs from pre-login ID,medium
+AUTH-02,active and verified,login with wrong password,refused with generic message,n/a,same message and similar timing as unknown email,medium
+AUTH-03,unknown email,login attempt,refused with generic message,n/a,no hint that the email is unregistered,medium
+AUTH-04,registered not verified,login,refused until verification,n/a,no token issued; API calls with any partial token refused,critical
+AUTH-05,pending admin approval,login,refused until approved,n/a,no access to tenant data,critical
+AUTH-06,active,deactivated by admin,refused,ends immediately,replay the old token and refresh token; both refused,critical
+AUTH-07,active,deleted,refused,ends immediately,token refused; personal data handled per policy,high
+AUTH-08,active,locked after repeated failures,refused until unlock or timeout,per policy,lockout threshold and duration as specified,medium
+AUTH-09,active,password changed by user,success with new password only,other sessions end per policy,old password refused; session B behavior matches policy,high
+AUTH-10,active,password reset completed,success with new password only,all sessions end,reset link single use; older reset links invalid,high
+AUTH-11,active,password reset requested but not completed,success with current password,unchanged,account not locked out by an unfinished reset,high
+AUTH-12,active,role downgraded,success,new permissions apply,previously allowed actions now refused without re-login,high
+AUTH-13,active,removed from tenant,success but no tenant access,loses access to that tenant,tenant data refused with existing token,critical
+AUTH-14,active,logout,n/a,ends,token replay after logout refused server side,high
+AUTH-15,active,access token expired,n/a,refused,refresh follows its own expiry and revocation,medium
+AUTH-16,active,OTP submitted twice or after expiry,refused,n/a,OTP single use with a short lifetime,high
+AUTH-17,active,OTP brute force,rate limited,n/a,attempt limit enforced per account and per client,high
+AUTH-18,invited not accepted,login,refused until invitation accepted,n/a,invitation link single use and expiring,medium

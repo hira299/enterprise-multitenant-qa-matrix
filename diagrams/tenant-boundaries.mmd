@@ -1,0 +1,25 @@
+flowchart LR
+  subgraph clients[Clients]
+    UA[Tenant A user<br/>browser]
+    UB[Tenant B user<br/>browser]
+    API_CLIENT[Direct API calls<br/>curl, scripts]
+  end
+  subgraph app[Application]
+    UI[Frontend<br/>hides actions]
+    GW[API<br/>authn, authz, tenant scope]
+    JOBS[Background jobs<br/>imports, emails, reports]
+  end
+  subgraph data[Shared database]
+    TA[(Tenant A rows)]
+    TB[(Tenant B rows)]
+    LOG[(Audit logs)]
+  end
+  UA --> UI
+  UB --> UI
+  UI --> GW
+  API_CLIENT -->|bypasses the UI| GW
+  GW -->|tenant from session| TA
+  GW -->|tenant from session| TB
+  JOBS -->|needs correct tenant context| TA
+  JOBS --> TB
+  GW --> LOG

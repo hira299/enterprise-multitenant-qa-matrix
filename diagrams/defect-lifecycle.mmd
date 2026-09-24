@@ -1,0 +1,11 @@
+stateDiagram-v2
+  [*] --> Found: journey, matrix, or charter
+  Found --> Isolated: smallest reliable reproduction
+  Isolated --> Reported: severity, layer, evidence
+  Reported --> Fixed
+  Fixed --> Retested: original steps and surrounding flows
+  Retested --> Reopened: still fails or regression found
+  Reopened --> Fixed
+  Retested --> Closed
+  Closed --> RegressionCheck: P1 and P2 become regression checks
+  RegressionCheck --> [*]

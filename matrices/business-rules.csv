@@ -1,0 +1,19 @@
+id,area,rule,how_to_break_it,expected,verify_in,risk
+BR-01,pricing,promotional price applies only inside its validity window,check out one minute after the end date,regular price charged,order total and invoice lines,critical
+BR-02,pricing,price is computed on the server,send a lower unit price or total in the request,server price used or request rejected,stored order lines,critical
+BR-03,pricing,discount cannot exceed its limit,stack two discounts or apply one twice,limit enforced,order total,high
+BR-04,orders,order can be dispatched only after approval,call dispatch on a submitted order,409 or equivalent; state unchanged,order status history,high
+BR-05,orders,approval happens once,approve the same order twice or concurrently,second attempt refused,order status and audit trail,medium
+BR-06,orders,quantity within stock and limits,order 0; negative; max + 1; decimal where integer expected,rejected with a clear error,stored order,medium
+BR-07,invoicing,each order is invoiced once,cancel a batch after invoicing then re-batch the orders,no duplicated invoice lines,invoice lines and totals,critical
+BR-08,invoicing,invoice total equals the sum of its lines,edit a line; apply a discount; cancel a line,header total recalculated,invoice header vs lines,high
+BR-09,payments,payment cannot exceed the outstanding balance,pay balance + 0.01; pay the exact balance twice,second and excess payments refused,outstanding balance and ledger,critical
+BR-10,payments,partial payments reduce the balance correctly,pay in three parts,balance and status correct after each step,ledger entries and invoice status,high
+BR-11,payments,duplicate submission is recorded once,double submit; retry after a client timeout,one payment recorded,payment records,critical
+BR-12,payments,overdue status reflects due date and unpaid balance,move the due date into the past; pay in full after overdue,status correct everywhere it is shown,invoice view and finance dashboard,high
+BR-13,returns,returned quantity cannot exceed delivered quantity,return more than delivered; return the same items twice,refused,return records,high
+BR-14,returns,credit note matches the approved return,issue a credit above the return value,refused,credit note and ledger,critical
+BR-15,reporting,dashboard totals equal the sum of records,compare totals after partial payments and returns,values match,dashboard vs records,high
+BR-16,data integrity,deleting a parent does not orphan children,delete a customer or location with related records,blocked or cascaded per spec; no orphans,related tables,medium
+BR-17,imports,import reports every rejected row,import a file with invalid rows,accepted plus rejected equals total rows,import summary vs stored rows,medium
+BR-18,progress,progress reflects real activity,complete the same item repeatedly; replay the completion request,progress counted once,progress records,medium
